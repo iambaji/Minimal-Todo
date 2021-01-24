@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo.Utility;
+package com.example.avjindersinghsekhon.minimaltodo.utility;
 
 import android.app.IntentService;
 import android.app.Notification;

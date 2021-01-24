@@ -13,7 +13,7 @@
         />
 
     <item android:title="@string/about"
-        android:id="@+id/aboutMeMenuItem"
+        android:id="@+id/aboutFragment"
         app:showAsAction="never"
         />
 

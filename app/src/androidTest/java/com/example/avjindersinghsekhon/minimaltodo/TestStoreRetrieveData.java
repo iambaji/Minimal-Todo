@@ -27,8 +27,8 @@ import android.content.Context;
 import android.test.ActivityUnitTestCase;
 
 import com.example.avjindersinghsekhon.minimaltodo.Main.MainActivity;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.StoreRetrieveData;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.ToDoItem;
+import com.example.avjindersinghsekhon.minimaltodo.utility.StoreRetrieveData;
+import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem;
 
 import org.json.JSONArray;
 

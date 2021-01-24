@@ -6,7 +6,7 @@
               android:layout_height="match_parent">
 
     <!--<include layout="@layout/base_toolbar"/>-->
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/myCoordinatorLayout"
         android:layout_width="match_parent"
         android:gravity="center"
@@ -44,14 +44,14 @@
         <!--</android.support.design.widget.AppBarLayout>-->
 
 
-        <com.example.avjindersinghsekhon.minimaltodo.Utility.RecyclerViewEmptySupport
+        <com.example.avjindersinghsekhon.minimaltodo.utility.RecyclerViewEmptySupport
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/toDoRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:src="@drawable/ic_add_white_24dp"
             android:id="@+id/addToDoItemFAB"
             android:layout_width="wrap_content"
@@ -63,5 +63,5 @@
             />
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,9 +20,9 @@ import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultFragment
 import com.example.avjindersinghsekhon.minimaltodo.Main.MainActivity;
 import com.example.avjindersinghsekhon.minimaltodo.Main.MainFragment;
 import com.example.avjindersinghsekhon.minimaltodo.R;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.StoreRetrieveData;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.ToDoItem;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.TodoNotificationService;
+import com.example.avjindersinghsekhon.minimaltodo.utility.StoreRetrieveData;
+import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem;
+import com.example.avjindersinghsekhon.minimaltodo.utility.TodoNotificationService;
 
 import org.json.JSONException;
 

@@ -23,7 +23,7 @@
 
 package com.example.avjindersinghsekhon.minimaltodo;
 
-import com.example.avjindersinghsekhon.minimaltodo.Utility.ToDoItem;
+import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem;
 
 import junit.framework.TestCase;
 

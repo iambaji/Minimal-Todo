@@ -42,9 +42,9 @@
             android:label="@string/app_name"
             />
 
-        <service android:name=".Utility.TodoNotificationService"
+        <service android:name=".utility.TodoNotificationService"
             />
-        <service android:name=".Utility.DeleteNotificationService"
+        <service android:name=".utility.DeleteNotificationService"
             />
         <activity android:name=".Settings.SettingsActivity"
             android:parentActivityName=".Main.MainActivity"

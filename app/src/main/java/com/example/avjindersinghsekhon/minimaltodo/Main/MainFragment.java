@@ -7,14 +7,14 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,11 +37,11 @@ import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultFragment
 import com.example.avjindersinghsekhon.minimaltodo.R;
 import com.example.avjindersinghsekhon.minimaltodo.Reminder.ReminderFragment;
 import com.example.avjindersinghsekhon.minimaltodo.Settings.SettingsActivity;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.ItemTouchHelperClass;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.RecyclerViewEmptySupport;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.StoreRetrieveData;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.ToDoItem;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.TodoNotificationService;
+import com.example.avjindersinghsekhon.minimaltodo.utility.ItemTouchHelperClass;
+import com.example.avjindersinghsekhon.minimaltodo.utility.RecyclerViewEmptySupport;
+import com.example.avjindersinghsekhon.minimaltodo.utility.StoreRetrieveData;
+import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem;
+import com.example.avjindersinghsekhon.minimaltodo.utility.TodoNotificationService;
 
 import org.json.JSONException;
 
@@ -327,7 +327,7 @@ public class MainFragment extends AppDefaultFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.aboutMeMenuItem:
+            case R.id.aboutFragment:
                 Intent i = new Intent(getContext(), AboutActivity.class);
                 startActivity(i);
                 return true;

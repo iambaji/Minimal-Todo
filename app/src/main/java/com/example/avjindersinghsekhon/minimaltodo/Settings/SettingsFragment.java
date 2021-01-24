@@ -9,7 +9,11 @@ import android.preference.PreferenceFragment;
 import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication;
 import com.example.avjindersinghsekhon.minimaltodo.Main.MainFragment;
 import com.example.avjindersinghsekhon.minimaltodo.R;
-import com.example.avjindersinghsekhon.minimaltodo.Utility.PreferenceKeys;
+
+import com.example.avjindersinghsekhon.minimaltodo.utility.PreferenceKeys;
+
+import static com.example.avjindersinghsekhon.minimaltodo.utility.ConstantsKt.THEME_PREFERENCES;
+
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     AnalyticsApplication app;
@@ -26,7 +30,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         PreferenceKeys preferenceKeys = new PreferenceKeys(getResources());
         if (key.equals(preferenceKeys.night_mode_pref_key)) {
-            SharedPreferences themePreferences = getActivity().getSharedPreferences(MainFragment.THEME_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences themePreferences = getActivity().getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor themeEditor = themePreferences.edit();
             //We tell our MainLayout to recreate itself because mode has changed
             themeEditor.putBoolean(MainFragment.RECREATE_ACTIVITY, true);

@@ -1,6 +1,5 @@
-package com.example.avjindersinghsekhon.minimaltodo.fragments
+package com.example.avjindersinghsekhon.minimaltodo.viewmodels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.*
 import com.example.avjindersinghsekhon.minimaltodo.Repository
 import com.example.avjindersinghsekhon.minimaltodo.database.ToDo

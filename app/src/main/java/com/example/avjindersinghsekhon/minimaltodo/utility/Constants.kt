@@ -20,7 +20,6 @@ const val FILENAME = "todoitems.json"
 const val SHARED_PREF_DATA_SET_CHANGED = "com.avjindersekhon.datasetchanged"
 const val CHANGE_OCCURED = "com.avjinder.changeoccured"
 private const val mTheme = -1
-private const val theme = "name_of_the_theme"
 
 const val RECREATE_ACTIVITY = "com.avjindersekhon.recreateactivity"
 

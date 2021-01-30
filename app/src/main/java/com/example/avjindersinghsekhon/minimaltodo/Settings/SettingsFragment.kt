@@ -1,63 +1,50 @@
-package com.example.avjindersinghsekhon.minimaltodo.Settings;
+package com.example.avjindersinghsekhon.minimaltodo.Settings
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.os.Bundle
+import android.preference.CheckBoxPreference
+import com.example.avjindersinghsekhon.minimaltodo.utility.*
+import android.preference.PreferenceFragment
+import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication
+import com.example.avjindersinghsekhon.minimaltodo.R
+import com.example.avjindersinghsekhon.minimaltodo.utility.PreferenceKeys
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.PreferenceFragment;
-
-import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication;
-import com.example.avjindersinghsekhon.minimaltodo.Main.MainFragment;
-import com.example.avjindersinghsekhon.minimaltodo.R;
-
-import com.example.avjindersinghsekhon.minimaltodo.utility.PreferenceKeys;
-
-import static com.example.avjindersinghsekhon.minimaltodo.utility.ConstantsKt.THEME_PREFERENCES;
-
-
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-    AnalyticsApplication app;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences_layout);
-        app = (AnalyticsApplication) getActivity().getApplication();
+class SettingsFragment : PreferenceFragment(), OnSharedPreferenceChangeListener {
+    var app: AnalyticsApplication? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addPreferencesFromResource(R.xml.preferences_layout)
+        app = activity.application as AnalyticsApplication
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        PreferenceKeys preferenceKeys = new PreferenceKeys(getResources());
-        if (key.equals(preferenceKeys.night_mode_pref_key)) {
-            SharedPreferences themePreferences = getActivity().getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE);
-            SharedPreferences.Editor themeEditor = themePreferences.edit();
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        val preferenceKeys = PreferenceKeys(resources)
+        if (key == preferenceKeys.night_mode_pref_key) {
+            val themePreferences = activity.getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
+            val themeEditor = themePreferences.edit()
             //We tell our MainLayout to recreate itself because mode has changed
-            themeEditor.putBoolean(MainFragment.RECREATE_ACTIVITY, true);
-
-            CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference(preferenceKeys.night_mode_pref_key);
-            if (checkBoxPreference.isChecked()) {
+            themeEditor.putBoolean(RECREATE_ACTIVITY, true)
+            val checkBoxPreference = findPreference(preferenceKeys.night_mode_pref_key) as CheckBoxPreference
+            if (checkBoxPreference.isChecked) {
                 //Comment out this line if not using Google Analytics
-                app.send(this, "Settings", "Night Mode used");
-                themeEditor.putString(MainFragment.THEME_SAVED, MainFragment.DARKTHEME);
+                app!!.send(this, "Settings", "Night Mode used")
+                themeEditor.putString(THEME_SAVED, DARKTHEME)
             } else {
-                themeEditor.putString(MainFragment.THEME_SAVED, MainFragment.LIGHTTHEME);
+                themeEditor.putString(THEME_SAVED, LIGHTTHEME)
             }
-            themeEditor.apply();
-
-            getActivity().recreate();
+            themeEditor.apply()
+            activity.recreate()
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    override fun onResume() {
+        super.onResume()
+        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    override fun onPause() {
+        super.onPause()
+        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 }

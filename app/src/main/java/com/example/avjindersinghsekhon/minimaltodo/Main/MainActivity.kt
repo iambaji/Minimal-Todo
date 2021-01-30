@@ -12,6 +12,7 @@ import com.example.avjindersinghsekhon.minimaltodo.About.AboutActivity
 import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultActivity
 import com.example.avjindersinghsekhon.minimaltodo.R
 import com.example.avjindersinghsekhon.minimaltodo.Settings.SettingsActivity
+import com.example.avjindersinghsekhon.minimaltodo.fragments.ListTodoFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +22,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(false)
-//        if (savedInstanceState == null) {
-//            supportFragmentManager
-//                    .beginTransaction()
-//                    .replace(R.id.fragment_container_view, MainFragment.newInstance())
-//                    .commit()
-//        }
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_container_view, ListTodoFragment.newInstance())
+                    .commit()
+        }
     }
 
 

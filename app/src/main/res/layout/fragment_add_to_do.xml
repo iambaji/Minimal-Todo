@@ -2,7 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.avjindersinghsekhon.minimaltodo.AddToDo.AddToDoViewModel" />
     </data>
 
     <LinearLayout
@@ -67,6 +69,7 @@
                             android:layout_marginRight="32dp"
                             android:gravity="start|bottom"
                             android:hint="@string/title"
+
                             android:inputType="textAutoCorrect|textCapSentences"
                             android:lines="2"
                             android:maxLength="30"

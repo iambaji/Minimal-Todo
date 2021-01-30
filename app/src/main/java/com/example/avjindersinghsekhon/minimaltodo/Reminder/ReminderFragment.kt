@@ -1,205 +1,179 @@
-package com.example.avjindersinghsekhon.minimaltodo.Reminder;
+package com.example.avjindersinghsekhon.minimaltodo.Reminder
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 
-import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication;
-import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultFragment;
-import com.example.avjindersinghsekhon.minimaltodo.Main.MainActivity;
-import com.example.avjindersinghsekhon.minimaltodo.Main.MainFragment;
-import com.example.avjindersinghsekhon.minimaltodo.R;
-import com.example.avjindersinghsekhon.minimaltodo.utility.StoreRetrieveData;
-import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem;
-import com.example.avjindersinghsekhon.minimaltodo.utility.TodoNotificationService;
+import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.example.avjindersinghsekhon.minimaltodo.utility.*
+import androidx.appcompat.widget.Toolbar
+import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication
+import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultFragment
+import com.example.avjindersinghsekhon.minimaltodo.Main.MainActivity
+import com.example.avjindersinghsekhon.minimaltodo.R
+import com.example.avjindersinghsekhon.minimaltodo.utility.StoreRetrieveData
+import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem
+import com.example.avjindersinghsekhon.minimaltodo.utility.TodoNotificationService
+import fr.ganfra.materialspinner.MaterialSpinner
+import org.json.JSONException
+import java.io.IOException
+import java.util.*
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
-
-import fr.ganfra.materialspinner.MaterialSpinner;
-
-import static android.content.Context.MODE_PRIVATE;
-
-public class ReminderFragment extends AppDefaultFragment {
-    private TextView mtoDoTextTextView;
-    private Button mRemoveToDoButton;
-    private MaterialSpinner mSnoozeSpinner;
-    private String[] snoozeOptionsArray;
-    private StoreRetrieveData storeRetrieveData;
-    private ArrayList<ToDoItem> mToDoItems;
-    private ToDoItem mItem;
-    public static final String EXIT = "com.avjindersekhon.exit";
-    private TextView mSnoozeTextView;
-    String theme;
-    AnalyticsApplication app;
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        app = (AnalyticsApplication) getActivity().getApplication();
-        app.send(this);
-
-        theme = getActivity().getSharedPreferences(MainFragment.THEME_PREFERENCES, MODE_PRIVATE).getString(MainFragment.THEME_SAVED, MainFragment.LIGHTTHEME);
-        if (theme.equals(MainFragment.LIGHTTHEME)) {
-            getActivity().setTheme(R.style.CustomStyle_LightTheme);
+class ReminderFragment : AppDefaultFragment() {
+    private var mtoDoTextTextView: TextView? = null
+    private var mRemoveToDoButton: Button? = null
+    private var mSnoozeSpinner: MaterialSpinner? = null
+    private var snoozeOptionsArray: Array<String>? = null
+    private var storeRetrieveData: StoreRetrieveData? = null
+    private var mToDoItems: ArrayList<ToDoItem?>? = null
+    private var mItem: ToDoItem? = null
+    private var mSnoozeTextView: TextView? = null
+    var theme: String? = null
+    var app: AnalyticsApplication? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        app = requireActivity().application as AnalyticsApplication
+        app!!.send(this)
+        theme = requireActivity().getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE).getString(THEME_SAVED, LIGHTTHEME)
+        if (theme == LIGHTTHEME) {
+            requireActivity().setTheme(R.style.CustomStyle_LightTheme)
         } else {
-            getActivity().setTheme(R.style.CustomStyle_DarkTheme);
+            requireActivity().setTheme(R.style.CustomStyle_DarkTheme)
         }
-        storeRetrieveData = new StoreRetrieveData(getContext(), MainFragment.FILENAME);
-        mToDoItems = MainFragment.getLocallyStoredData(storeRetrieveData);
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
-
-
-        Intent i = getActivity().getIntent();
-        UUID id = (UUID) i.getSerializableExtra(TodoNotificationService.TODOUUID);
-        mItem = null;
-        for (ToDoItem toDoItem : mToDoItems) {
-            if (toDoItem.getIdentifier().equals(id)) {
-                mItem = toDoItem;
-                break;
+        storeRetrieveData = StoreRetrieveData(context, FILENAME)
+        //mToDoItems = getLocallyStoredData(storeRetrieveData)
+        (activity as AppCompatActivity?)!!.setSupportActionBar(view.findViewById<View>(R.id.toolbar) as Toolbar)
+        val i = requireActivity().intent
+        val id = i.getSerializableExtra(TodoNotificationService.TODOUUID) as UUID
+        mItem = null
+        for (toDoItem in mToDoItems!!) {
+            if (toDoItem!!.identifier == id) {
+                mItem = toDoItem
+                break
             }
         }
-
-        snoozeOptionsArray = getResources().getStringArray(R.array.snooze_options);
-
-        mRemoveToDoButton = (Button) view.findViewById(R.id.toDoReminderRemoveButton);
-        mtoDoTextTextView = (TextView) view.findViewById(R.id.toDoReminderTextViewBody);
-        mSnoozeTextView = (TextView) view.findViewById(R.id.reminderViewSnoozeTextView);
-        mSnoozeSpinner = (MaterialSpinner) view.findViewById(R.id.todoReminderSnoozeSpinner);
+        snoozeOptionsArray = resources.getStringArray(R.array.snooze_options)
+        mRemoveToDoButton = view.findViewById<View>(R.id.toDoReminderRemoveButton) as Button
+        mtoDoTextTextView = view.findViewById<View>(R.id.toDoReminderTextViewBody) as TextView
+        mSnoozeTextView = view.findViewById<View>(R.id.reminderViewSnoozeTextView) as TextView
+        mSnoozeSpinner = view.findViewById<View>(R.id.todoReminderSnoozeSpinner) as MaterialSpinner
 
 //        mtoDoTextTextView.setBackgroundColor(item.getTodoColor());
-        mtoDoTextTextView.setText(mItem.getToDoText());
-
-        if (theme.equals(MainFragment.LIGHTTHEME)) {
-            mSnoozeTextView.setTextColor(getResources().getColor(R.color.secondary_text));
+        mtoDoTextTextView!!.text = mItem!!.toDoText
+        if (theme == LIGHTTHEME) {
+            mSnoozeTextView!!.setTextColor(resources.getColor(R.color.secondary_text))
         } else {
-            mSnoozeTextView.setTextColor(Color.WHITE);
-            mSnoozeTextView.setCompoundDrawablesWithIntrinsicBounds(
+            mSnoozeTextView!!.setTextColor(Color.WHITE)
+            mSnoozeTextView!!.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.ic_snooze_white_24dp, 0, 0, 0
-            );
+            )
         }
-
-        mRemoveToDoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.send(this, "Action", "Todo Removed from Reminder Activity");
-                mToDoItems.remove(mItem);
-                changeOccurred();
-                saveData();
-                closeApp();
-//                finish();
+        mRemoveToDoButton!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                app!!.send(this, "Action", "Todo Removed from Reminder Activity")
+                mToDoItems!!.remove(mItem)
+                changeOccurred()
+                saveData()
+                closeApp()
+                //                finish();
             }
-        });
+        })
 
 
 //        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, snoozeOptionsArray);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_text_view, snoozeOptionsArray);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-
-        mSnoozeSpinner.setAdapter(adapter);
-//        mSnoozeSpinner.setSelection(0);
+        val adapter = ArrayAdapter(context, R.layout.spinner_text_view, snoozeOptionsArray)
+        //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        mSnoozeSpinner!!.adapter = adapter
+        //        mSnoozeSpinner.setSelection(0);
     }
 
-    @Override
-    protected int layoutRes() {
-        return R.layout.fragment_reminder;
+    override fun layoutRes(): Int {
+        return R.layout.fragment_reminder
     }
 
-    private void closeApp() {
-        Intent i = new Intent(getContext(), MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        i.putExtra(EXIT, true);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MainFragment.SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(EXIT, true);
-        editor.apply();
-        startActivity(i);
-
+    private fun closeApp() {
+        val i = Intent(context, MainActivity::class.java)
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        //        i.putExtra(EXIT, true);
+        val sharedPreferences = requireActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(EXIT, true)
+        editor.apply()
+        startActivity(i)
     }
 
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_reminder, menu);
-        return true;
+    fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        requireActivity().menuInflater.inflate(R.menu.menu_reminder, menu)
+        return true
     }
 
-    private void changeOccurred() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MainFragment.SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(MainFragment.CHANGE_OCCURED, true);
-//        editor.commit();
-        editor.apply();
+    private fun changeOccurred() {
+        val sharedPreferences = requireActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(CHANGE_OCCURED, true)
+        //        editor.commit();
+        editor.apply()
     }
 
-    private Date addTimeToDate(int mins) {
-        app.send(this, "Action", "Snoozed", "For " + mins + " minutes");
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, mins);
-        return calendar.getTime();
+    private fun addTimeToDate(mins: Int): Date {
+        app!!.send(this, "Action", "Snoozed", "For $mins minutes")
+        val date = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MINUTE, mins)
+        return calendar.time
     }
 
-    private int valueFromSpinner() {
-        switch (mSnoozeSpinner.getSelectedItemPosition()) {
-            case 0:
-                return 10;
-            case 1:
-                return 30;
-            case 2:
-                return 60;
-            default:
-                return 0;
+    private fun valueFromSpinner(): Int {
+        return when (mSnoozeSpinner!!.selectedItemPosition) {
+            0 -> 10
+            1 -> 30
+            2 -> 60
+            else -> 0
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toDoReminderDoneMenuItem:
-                Date date = addTimeToDate(valueFromSpinner());
-                mItem.setToDoDate(date);
-                mItem.setHasReminder(true);
-                Log.d("OskarSchindler", "Date Changed to: " + date);
-                changeOccurred();
-                saveData();
-                closeApp();
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.toDoReminderDoneMenuItem -> {
+                val date = addTimeToDate(valueFromSpinner())
+                mItem!!.toDoDate = date
+                mItem!!.setHasReminder(true)
+                Log.d("OskarSchindler", "Date Changed to: $date")
+                changeOccurred()
+                saveData()
+                closeApp()
                 //foo
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-
-    private void saveData() {
+    private fun saveData() {
         try {
-            storeRetrieveData.saveToFile(mToDoItems);
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
+            storeRetrieveData!!.saveToFile(mToDoItems)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
-
-    public static ReminderFragment newInstance() {
-        return new ReminderFragment();
+    companion object {
+        const val EXIT = "com.avjindersekhon.exit"
+        @JvmStatic
+        fun newInstance(): ReminderFragment {
+            return ReminderFragment()
+        }
     }
 }

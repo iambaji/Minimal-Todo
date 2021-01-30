@@ -5,9 +5,12 @@
 
     <data>
         <import type="android.view.View"/>
-    <variable
-    name="addTodo"
-    type="View.OnClickListener" />
+        <variable
+            name="hasToDos"
+            type="boolean" />
+        <variable
+        name="addTodo"
+        type="View.OnClickListener" />
     </data>
 
     <LinearLayout
@@ -30,6 +33,7 @@
                 android:id="@+id/toDoEmptyView"
                 android:orientation="vertical"
                 android:gravity="center"
+                isViewGone="@{hasToDos}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -56,6 +60,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_width="match_parent"
+                        isViewGone="@{!hasToDos}"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior"
                         android:layout_height="match_parent"
                         android:id="@+id/toDoRecyclerView"/>

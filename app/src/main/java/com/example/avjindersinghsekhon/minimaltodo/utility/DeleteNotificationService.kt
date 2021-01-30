@@ -1,77 +1,58 @@
-package com.example.avjindersinghsekhon.minimaltodo.utility;
+package com.example.avjindersinghsekhon.minimaltodo.utility
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.app.IntentService
+import android.content.Intent
+import java.util.*
 
-import com.example.avjindersinghsekhon.minimaltodo.Main.MainFragment;
-
-import java.util.ArrayList;
-import java.util.UUID;
-
-public class DeleteNotificationService extends IntentService {
-
-    private StoreRetrieveData storeRetrieveData;
-    private ArrayList<ToDoItem> mToDoItems;
-    private ToDoItem mItem;
-
-    public DeleteNotificationService() {
-        super("DeleteNotificationService");
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        storeRetrieveData = new StoreRetrieveData(this, MainFragment.FILENAME);
-        UUID todoID = (UUID) intent.getSerializableExtra(TodoNotificationService.TODOUUID);
-
-        mToDoItems = loadData();
+class DeleteNotificationService : IntentService("DeleteNotificationService") {
+    private var storeRetrieveData: StoreRetrieveData? = null
+    private var mToDoItems: ArrayList<ToDoItem>? = null
+    private var mItem: ToDoItem? = null
+    override fun onHandleIntent(intent: Intent) {
+        storeRetrieveData = StoreRetrieveData(this, FILENAME)
+        val todoID = intent.getSerializableExtra(TodoNotificationService.TODOUUID) as UUID
+        mToDoItems = loadData()
         if (mToDoItems != null) {
-            for (ToDoItem item : mToDoItems) {
-                if (item.getIdentifier().equals(todoID)) {
-                    mItem = item;
-                    break;
+            for (item in mToDoItems!!) {
+                if (item.identifier == todoID) {
+                    mItem = item
+                    break
                 }
             }
-
             if (mItem != null) {
-                mToDoItems.remove(mItem);
-                dataChanged();
-                saveData();
+                mToDoItems!!.remove(mItem!!)
+                dataChanged()
+                saveData()
             }
-
         }
-
     }
 
-    private void dataChanged() {
-        SharedPreferences sharedPreferences = getSharedPreferences(MainFragment.SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(MainFragment.CHANGE_OCCURED, true);
-        editor.apply();
+    private fun dataChanged() {
+        val sharedPreferences = getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(CHANGE_OCCURED, true)
+        editor.apply()
     }
 
-    private void saveData() {
+    private fun saveData() {
         try {
-            storeRetrieveData.saveToFile(mToDoItems);
-        } catch (Exception e) {
-            e.printStackTrace();
+            storeRetrieveData!!.saveToFile(mToDoItems)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        saveData();
+    override fun onDestroy() {
+        super.onDestroy()
+        saveData()
     }
 
-    private ArrayList<ToDoItem> loadData() {
+    private fun loadData(): ArrayList<ToDoItem>? {
         try {
-            return storeRetrieveData.loadFromFile();
-        } catch (Exception e) {
-            e.printStackTrace();
+            return storeRetrieveData!!.loadFromFile()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        return null;
-
+        return null
     }
 }

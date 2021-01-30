@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
+
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -38,17 +43,28 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/coroutines.pro'
     }
+
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+//        // Enable Coroutines and Flow APIs
+//        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+//        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    }
+}
+
+kapt {
+    generateStubs = true
+
 }
 
 dependencies {
     def fragment_version = "1.2.5"
-    def nav_version = "2.3.2"
-
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
-
-
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.android.gms:play-services-analytics:7.8.0'
@@ -66,6 +82,25 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
+    implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
+
+
+    // Kotlin components
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines"
+
+    // UI
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
+
+
+    // Room components
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
 }
 repositories {
     mavenCentral()

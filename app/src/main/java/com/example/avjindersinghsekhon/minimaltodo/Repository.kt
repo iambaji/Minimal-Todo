@@ -16,6 +16,12 @@ class Repository(private val toDoItemDao: ToDoItemDao) {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
+    suspend fun update(item : ToDo) : Int{
+        return toDoItemDao.updateItem(item)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
      fun getItem(itemid : Int) : Flow<ToDo>{
         return toDoItemDao.getItem(itemid)
     }

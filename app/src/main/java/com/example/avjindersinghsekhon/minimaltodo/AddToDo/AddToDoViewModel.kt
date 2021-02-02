@@ -10,7 +10,9 @@ class AddToDoViewModel(private val repository : Repository) : ViewModel() {
     fun insert(item : ToDo) = viewModelScope.launch {
         repository.insert(item)
     }
-
+    fun update(item : ToDo) = viewModelScope.launch {
+        repository.update(item)
+    }
 
     fun getItem(id : Int) : LiveData<ToDo> = repository.getItem(id).asLiveData()
 }

@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.avjindersinghsekhon.minimaltodo.AlarmManager
 import com.example.avjindersinghsekhon.minimaltodo.Analytics.AnalyticsApplication
 import com.example.avjindersinghsekhon.minimaltodo.R
 import com.example.avjindersinghsekhon.minimaltodo.database.ToDo
@@ -35,13 +36,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddToDoFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    private val mLastEdited: Date? = null
+
    
 
     var toDoItem : ToDo?  = null
  
 
-    private var mUserEnteredDescription: String? = null
     private var mUserHasReminder = false
     var shouldUpdate : Boolean = false
 
@@ -197,32 +197,21 @@ class AddToDoFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePick
                     toDoHasDateSwitchCompat.error = getString(R.string.date_error_check_again)
                 } else {
                     app.send(this, "Action", "Make Todo")
-                    toDoItem?.apply {
+                    println(toDoItem?.toDoRemindDate.toString())
+                     toDoItem?.apply {
                         toDoTitle = userToDoEditText.text.toString()
                         toDoDescription = userToDoDescription.text.toString()
                         hasReminder = mUserHasReminder
-                        toDoRemindDate = null
-                        todoColor = null
+                         todoColor = 0
                     }
 
-                    //        mUserToDoItem.setLastEdited(mLastEdited);
-                    if (mUserReminderDate != null) {
-                        val calendar = Calendar.getInstance()
-                        calendar.time = mUserReminderDate
-                        calendar[Calendar.SECOND] = 0
-                        mUserReminderDate = calendar.time
-                    }
-                    toDoItem?.apply {
-                        toDoRemindDate = mUserReminderDate
-                        todoColor = mUserColor
-                    }
+
+
                     viewmodel.insert(toDoItem!!)
+                    val alarmManager = context?.let { it1 -> AlarmManager(it1) }
+                    alarmManager?.createAlarmForItem(toDoItem!!)
 
-//                    if(shouldUpdate){
-//                        viewmodel.insert(toDoItem!!)
-////                        viewmodel.update(toDoItem!!)
-//                    }
-//                    else{}
+
 
                     requireActivity().setResult(Activity.RESULT_OK)
                     hideKeyboard(userToDoEditText)
@@ -294,7 +283,7 @@ class AddToDoFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePick
 
     private fun setDateAndTimeEditText() {
 
-        toDoItem?.apply {
+        this.toDoItem?.apply {
             if(this != null && this?.hasReminder && toDoRemindDate!=null)
             {
                 val userDate = formatDate("d MMM, yyyy", toDoRemindDate)
@@ -308,8 +297,9 @@ class AddToDoFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePick
                 binding.newTodoTimeEditText.setText(userTime)
                 binding.newTodoDateEditText.setText(userDate)
             }else{
+                this.hasReminder = true
                 binding.newTodoDateEditText.setText(getString(R.string.date_reminder_default))
-                //            mUserReminderDate = new Date();
+
                 val time24 = DateFormat.is24HourFormat(context)
                 val cal = Calendar.getInstance()
                 if (time24) {

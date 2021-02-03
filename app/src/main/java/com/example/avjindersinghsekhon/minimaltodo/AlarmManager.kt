@@ -5,28 +5,40 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.example.avjindersinghsekhon.minimaltodo.database.ToDo
 import com.example.avjindersinghsekhon.minimaltodo.utility.ToDoItem
 import com.example.avjindersinghsekhon.minimaltodo.utility.TodoNotificationService
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AlarmManager(private val mToDoItemsArrayList: ArrayList<ToDoItem>, private val context: Context) {
+class AlarmManager(private val context: Context) {
 
 
-     fun setAlarms() {
-        if (mToDoItemsArrayList != null) {
-            for (item in mToDoItemsArrayList!!) {
-                if (item.hasReminder() && item.toDoDate != null) {
-                    if (item.toDoDate.before(Date())) {
-                        item.toDoDate = null
-                        continue
-                    }
-                    val i = Intent(context, TodoNotificationService::class.java)
-                    i.putExtra(TodoNotificationService.TODOUUID, item.identifier)
-                    i.putExtra(TodoNotificationService.TODOTEXT, item.toDoText)
-                    createAlarm(i, item.identifier.hashCode(), item.toDoDate.time)
-                }
-            }
+//     fun setAlarms() {
+//        if (mToDoItemsArrayList != null) {
+//            for (item in mToDoItemsArrayList!!) {
+//                if (item.hasReminder() && item.toDoDate != null) {
+//                    if (item.toDoDate.before(Date())) {
+//                        item.toDoDate = null
+//                        continue
+//                    }
+//                    val i = Intent(context, TodoNotificationService::class.java)
+//                    i.putExtra(TodoNotificationService.TODOUUID, item.identifier)
+//                    i.putExtra(TodoNotificationService.TODOTEXT, item.toDoText)
+//                    createAlarm(i, item.identifier.hashCode(), item.toDoDate.time)
+//                }
+//            }
+//        }
+//    }
+
+    fun createAlarmForItem(item: ToDo)
+    {
+        if(item.hasReminder && item.toDoRemindDate != null && item.toDoRemindDate?.before(Date()) != true)
+        {
+            val i = Intent(context, TodoNotificationService::class.java)
+            i.putExtra(TodoNotificationService.TODOUUID, item.itemid)
+            i.putExtra(TodoNotificationService.TODOTEXT, item.toDoTitle)
+            createAlarm(i, item.itemid.hashCode(), item.toDoRemindDate?.time!!)
         }
     }
 

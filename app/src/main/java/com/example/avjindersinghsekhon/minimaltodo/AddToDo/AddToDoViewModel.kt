@@ -1,6 +1,7 @@
 package com.example.avjindersinghsekhon.minimaltodo.AddToDo
 
 import androidx.lifecycle.*
+import com.example.avjindersinghsekhon.minimaltodo.AlarmManager
 import com.example.avjindersinghsekhon.minimaltodo.Repository
 import com.example.avjindersinghsekhon.minimaltodo.database.ToDo
 import kotlinx.coroutines.launch
@@ -8,6 +9,7 @@ import kotlinx.coroutines.launch
 class AddToDoViewModel(private val repository : Repository) : ViewModel() {
 
     fun insert(item : ToDo) = viewModelScope.launch {
+
         repository.insert(item)
     }
     fun update(item : ToDo) = viewModelScope.launch {

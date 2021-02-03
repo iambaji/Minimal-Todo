@@ -33,18 +33,14 @@ class TodoRecyclerViewAdapter  (private val app : AnalyticsApplication, val item
     lateinit var context : Context
     lateinit var view : View
     lateinit var alarmManager: AlarmManager
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoRecyclerViewAdapter.ViewHolder {
         context = parent.context
-
-
-        // set up alaram manager
-      //  alarmManager = AlarmManager(items, context)
-       // alarmManager.setAlarms()
         view =  parent.rootView
         return ViewHolder(ListCircleTryBinding.inflate(LayoutInflater.from(context), parent, false))
     }
-    
-    
+
     fun submitList(items : ArrayList<ToDo>){
         this.items.clear()
         this.items.addAll(items)
@@ -53,9 +49,6 @@ class TodoRecyclerViewAdapter  (private val app : AnalyticsApplication, val item
 
     override fun onBindViewHolder(holder: TodoRecyclerViewAdapter.ViewHolder, position: Int) {
         val item = items[position]
-        //            if(item.getToDoDate()!=null && item.getToDoDate().before(new Date())){
-//                item.setToDoDate(null);
-//            }
         holder.bind(item)
     }
 
@@ -82,7 +75,7 @@ class TodoRecyclerViewAdapter  (private val app : AnalyticsApplication, val item
         mJustDeletedToDoItem = items.removeAt(position)
         mIndexOfDeletedToDoItem = position
         val i = Intent(context, TodoNotificationService::class.java)
-       // alarmManager.deleteAlarm(i,mJustDeletedToDoItem?.itemid.hashCode())
+        alarmManager.deleteAlarm(i,mJustDeletedToDoItem?.itemid.hashCode())
 
         notifyItemRemoved(position)
 

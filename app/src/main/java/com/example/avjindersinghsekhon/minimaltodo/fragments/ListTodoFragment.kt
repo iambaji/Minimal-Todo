@@ -35,21 +35,15 @@ class ListTodoFragment : Fragment() {
 
     lateinit var adapter : TodoRecyclerViewAdapter
 
-    lateinit var storeRetrieveData: StoreRetrieveData
     var itemTouchHelper: ItemTouchHelper? = null
     private var customRecyclerScrollViewListener: CustomRecyclerScrollViewListener? = null
 
     private var mTheme = -1
-     var theme = "name_of_the_theme"
+    var theme = "name_of_the_theme"
 
     lateinit var app: AnalyticsApplication
-    private val testStrings = arrayOf("Clean my room",
-            "Water the plants",
-            "Get car washed",
-            "Get my dry cleaning"
-    )
 
-    var mToDoItemsArrayList : ArrayList<ToDoItem> = ArrayList()
+
     companion object {
         fun newInstance() = ListTodoFragment()
     }
@@ -61,6 +55,8 @@ class ListTodoFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+        super.onCreate(savedInstanceState)
+
         binding = ListTodoFragmentBinding.inflate(inflater,container,false)
 
         app = requireActivity().application as AnalyticsApplication
@@ -75,7 +71,6 @@ class ListTodoFragment : Fragment() {
         }
         this.requireActivity().setTheme(mTheme)
 
-        super.onCreate(savedInstanceState)
 
 
         val sharedPreferences = requireActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, Context.MODE_PRIVATE)
@@ -83,32 +78,37 @@ class ListTodoFragment : Fragment() {
         editor.putBoolean(CHANGE_OCCURED, false)
         editor.apply()
 
-        storeRetrieveData = StoreRetrieveData(context, FILENAME)
-        mToDoItemsArrayList = getLocallyStoredData(storeRetrieveData)
 
 
+
+        setUpViews(binding)
+
+        setSubscribeUI(binding,viewModel)
+
+        return binding.root
+    }
+
+    private fun setUpViews(binding: ListTodoFragmentBinding)
+    {
         adapter = TodoRecyclerViewAdapter(app ){
             val i = Intent(context, AddToDoActivity::class.java)
             i.putExtra(TODOITEM, it.itemid)
             startActivityForResult(i, REQUEST_ID_TODO_ITEM)
 
         }
-
-
-     binding.apply {
+        binding.apply {
             addToDoItemFAB.setOnClickListener {
                 app?.send(this, "Action", "FAB pressed")
                 val newTodo = Intent(context, AddToDoActivity::class.java)
 
-                val color = ColorGenerator.MATERIAL.randomColor
-
                 startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM)
             }
+
             if (theme == LIGHTTHEME) {
                 toDoRecyclerView?.setBackgroundColor(resources.getColor(R.color.primary_lightest))
             }
             toDoRecyclerView.apply {
-               // setEmptyView(toDoEmptyView)
+                // setEmptyView(toDoEmptyView)
                 setHasFixedSize(true)
                 setItemAnimator(DefaultItemAnimator())
                 setLayoutManager(LinearLayoutManager(context))
@@ -137,29 +137,19 @@ class ListTodoFragment : Fragment() {
 
         }
 
+    }
+
+
+    private fun setSubscribeUI(binding: ListTodoFragmentBinding,viewModel: ListTodoViewModel){
+
         viewModel.todoItems.observe(viewLifecycleOwner){
-                binding.hasToDos = it.isNotEmpty()
-                adapter.submitList(ArrayList(it))
+            binding.hasToDos = it.isNotEmpty()
+            adapter.submitList(ArrayList(it))
         }
-
-        return binding.root
     }
 
 
-    fun getLocallyStoredData(storeRetrieveData: StoreRetrieveData): ArrayList<ToDoItem> {
-        var items: ArrayList<ToDoItem> = ArrayList()
-        try {
-            items = storeRetrieveData.loadFromFile()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        if (items == null) {
-            items = ArrayList()
-        }
-        return items
-    }
+
 
     override fun onResume() {
         super.onResume()
@@ -189,41 +179,14 @@ class ListTodoFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        app = requireActivity().application as AnalyticsApplication
-        super.onStart()
-//        val sharedPreferences = requireActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, Context.MODE_PRIVATE)
-//        if (sharedPreferences.getBoolean(CHANGE_OCCURED, false)) {
-//            mToDoItemsArrayList = getLocallyStoredData(storeRetrieveData)
-//            adapter = TodoRecyclerViewAdapter(mToDoItemsArrayList,app) {
-//                val i = Intent(context, AddToDoActivity::class.java)
-//                i.putExtra(TODOITEM, it)
-//                startActivityForResult(i, REQUEST_ID_TODO_ITEM)
-//
-//            }
-//                binding.toDoRecyclerView.adapter = adapter
-//            val editor = sharedPreferences.edit()
-//            editor.putBoolean(CHANGE_OCCURED, false)
-//            //            editor.commit();
-//            editor.apply()
-//        }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
+
     }
 
 
-
-
-    fun addThemeToSharedPreferences(theme: String?) {
-        val sharedPreferences = requireActivity().getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString(THEME_SAVED, theme)
-        editor.apply()
-    }
-
-
-    fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        requireActivity().menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -241,65 +204,6 @@ class ListTodoFragment : Fragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_CANCELED && requestCode == REQUEST_ID_TODO_ITEM) {
-
-        }
-    }
-
-  
-
-
-    private fun addToDataStore(item: ToDoItem) {
-
-        mToDoItemsArrayList.add(item)
-        adapter.notifyItemInserted(mToDoItemsArrayList.size - 1)
-    }
-
-
-    fun makeUpItems(items: ArrayList<ToDoItem?>, len: Int) {
-        for (testString in testStrings) {
-            val item = ToDoItem(testString, testString, false, Date())
-
-//            item.setTodoColor(getResources().getString(R.color.red_secondary));
-            items.add(item)
-        }
-    }
-
-
-    //Used when using custom fonts
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-//    }
-
-    //Used when using custom fonts
-    //    @Override
-    //    protected void attachBaseContext(Context newBase) {
-    //        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    //    }
-    private fun saveDate() {
-        try {
-            storeRetrieveData!!.saveToFile(mToDoItemsArrayList)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        try {
-            storeRetrieveData!!.saveToFile(mToDoItemsArrayList)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -307,9 +211,5 @@ class ListTodoFragment : Fragment() {
     }
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-    }
 
 }

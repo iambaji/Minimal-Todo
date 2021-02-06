@@ -1,3 +1,5 @@
+# This is a fork from [avjinder](https://github.com/avjinder/Minimal-Todo). i am migrating the whole project to kotlin, architecture components and to use modern best practices  
+
 # Minimal ![Build Status](https://travis-ci.org/avjinder/Minimal-Todo.svg?branch=master)
 
 <img src="/screenshots/app_icon.png" height="200px"/> <br>
